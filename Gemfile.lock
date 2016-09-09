@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    provider_taxonomy (0.1.1)
+    provider_taxonomy (0.1.2)
       rails
 
 GEM
