@@ -1,4 +1,4 @@
-class CreateTaxonomyItems < ActiveRecord::Migration[5.0]
+class CreateTaxonomyItems < ActiveRecord::Migration
   def change
     create_table :taxonomy_items do |t|
       t.string :name, null: false

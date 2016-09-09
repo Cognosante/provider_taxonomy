@@ -1,8 +1,5 @@
-# ProviderTaxonomy
+# Provider Taxonomy
 A gem to add a database table containing the NUCC Health Care Provider Taxonomy.
-
-## Usage
-Once installed, your Rails app will have a TaxonomyItem database table, from which you can access all healthcare provider specialties.
 
 ## Installation
 Add this line to your application's Gemfile:
@@ -22,6 +19,19 @@ $ rake db:migrate
 ```
 ```bash
 $ rake provider_taxonomy:import
+```
+
+## Usage
+Once installed, your Rails app will have a `taxonomy_items` database table and a `TaxonomyItem` model from which you can access all healthcare provider specialties.
+
+If you would like to extend the model with your own, you can do the following
+
+```ruby
+class Specialty < ActiveRecord::Base
+  self.table_name = "taxonomy_items"
+  belongs_to :parent, foreign_key: :parent_id, class_name: Specialty, required: false
+  # Your code goes here
+end
 ```
 
 ## License
