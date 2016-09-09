@@ -1,6 +1,11 @@
 namespace :provider_taxonomy do
+  desc 'Run all import tasks'
+  task import: [:import_provider_taxonomy, :import_categories, :import_institution_taxonomy] do
+    puts 'Ready to go!'
+  end
+
   desc 'Import data representing provider specialties taxonomy. Result is db table with parent ids and depth for each entry.'
-  task import: :environment do
+  task import_provider_taxonomy: :environment do
     require 'csv'
     require 'open-uri'
 
@@ -106,5 +111,121 @@ namespace :provider_taxonomy do
     print "\n"
     puts 'Provider taxonomy imported.'
     FileUtils.rm_rf 'db/provider_taxonomy'
+  end
+
+  desc 'Import provider type specialties categories.'
+  task import_categories: :environment do
+    INDIVIDUAL_SPECIALTIES = [
+      'Allopathic & Osteopathic Physicians',
+      'Behavioral Health & Social Service Providers',
+      'Chiropractic Providers',
+      'Dental Providers',
+      'Dietary & Nutritional Service Providers',
+      'Emergency Medical Service Providers',
+      'Eye and Vision Services Providers',
+      'Nursing Service Providers',
+      'Nursing Service Related Providers',
+      'Other Service Providers',
+      'Pharmacy Service Providers',
+      'Physician Assistants & Advanced Practice Nursing Providers',
+      'Podiatric Medicine & Surgery Service Providers',
+      'Respiratory, Developmental, Rehabilitative and Restorative Service Providers',
+      'Speech, Language and Hearing Service Providers',
+      'Student, Health Care',
+      'Technologists, Technicians & Other Technical Service Providers'
+    ].freeze
+
+    GROUP_SPECIALTIES = ['Group'].freeze
+
+    INSTITUTIONAL_SPECIALTIES = [
+      'Agencies',
+      'Ambulatory Health Care Facilities',
+      'Hospital Units',
+      'Hospitals',
+      'Laboratories',
+      'Managed Care Organizations',
+      'Nursing & Custodial Care Facilities',
+      'Other Service Providers',
+      'Residential Treatment Facilities',
+      'Respite Care Facility',
+      'Transportation Services'
+    ].freeze
+
+    SUPPLIER_SPECIALTIES = [
+      'Suppliers'
+    ].freeze
+
+    if ActiveRecord::Base.connection.table_exists? 'taxonomy_items'
+
+      print "Importing provider type specialty categories\n"
+      provider_types = TaxonomyItem.provider_types
+
+      INDIVIDUAL_SPECIALTIES.each do |specialty|
+        s = TaxonomyItem.find(provider_types.where(name: specialty).first.id)
+        s.update_attributes(category: s.category = 'individual')
+        print "."
+      end
+
+      GROUP_SPECIALTIES.each do |specialty|
+        s = TaxonomyItem.find(provider_types.where(name: specialty).first.id)
+        s.update_attributes(category: s.category = 'group')
+        print "."
+      end
+
+      INSTITUTIONAL_SPECIALTIES.each do |specialty|
+        s = TaxonomyItem.find(provider_types.where(name: specialty).first.id)
+        s.update_attributes(category: s.category = 'institution')
+        print "."
+      end
+
+      SUPPLIER_SPECIALTIES.each do |specialty|
+        s = TaxonomyItem.find(provider_types.where(name: specialty).first.id)
+        s.update_attributes(category: s.category = 'supplier')
+        print "."
+      end
+
+      print "\n"
+
+    else
+      print "The 'taxonomy_items' table does not exist. Be sure to create it first."
+    end
+  end
+
+  desc 'Import data representing institution specialties taxonomy. '
+  task import_institution_taxonomy: :environment do
+    require 'csv'
+
+    table = 'taxonomy_items'
+
+    $stdout.sync = true
+
+    if ActiveRecord::Base.connection.table_exists? table
+
+      csv_text = File.read(ProviderTaxonomy::Engine.root + 'db/institution_types.csv')
+      csv = CSV.parse(csv_text, :headers => true)
+
+      existing_institution_types = TaxonomyItem.where(category: 'institution')
+
+      print "Importing institution taxonomy\n"
+      csv.each_with_index do |row, i|
+
+        print "\n" if i % 80 == 0
+
+        if !existing_institution_types.exists?(name: row['Name'], sub_category: row['Sub-Category'])
+
+          # Create this type
+          TaxonomyItem.create!(
+            name: row['Name'],
+            category: row['Category'],
+            sub_category: row['Sub-Category'],
+            ).id
+          print "*"
+        end
+        print "."
+      end
+      print "\n"
+    else
+      print "The #{table} table does not exist. Please create it first."
+    end
   end
 end

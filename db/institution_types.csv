@@ -1,0 +1,29 @@
+Name,Category,Sub-Category
+Community Mental Health Center,institution,non-hospital
+Comprehensive Outpatient Rehabilitation Facility,institution,non-hospital
+Critical Access Hospital,institution,non-hospital
+End-Stage Renal Disease Facility,institution,non-hospital
+Federally Qualified Health Center,institution,non-hospital
+Histocompatibility Laboratory,institution,non-hospital
+Home Health Agency,institution,non-hospital
+Home Health Agency (Sub-unit),institution,non-hospital
+Hospice,institution,non-hospital
+Indian Health Services Facility,institution,non-hospital
+Organ Procurement Organization,institution,non-hospital
+Outpatient Physical Therapy/Occupational Therapy/ Speech Pathology Services,institution,non-hospital
+Religious Non-Medical Health Care Institution,institution,non-hospital
+Rural Health Clinic,institution,non-hospital
+Skilled Nursing Facility,institution,non-hospital
+Other,institution,non-hospital
+Hospital—General,institution,hospital
+Hospital—Acute Care,institution,hospital
+Hospital—Children’s (excluded from PPS),institution,hospital
+Hospital—Long-Term (excluded from PPS),institution,hospital
+Hospital—Psychiatric (excluded from PPS),institution,hospital
+Hospital—Rehabilitation (excluded from PPS),institution,hospital
+Hospital—Short-Term (General and Specialty),institution,hospital
+Hospital—Swing-Bed approved,institution,hospital
+Hospital—Psychiatric Unit,institution,hospital
+Hospital—Rehabilitation Unit,institution,hospital
+"Hospital—Specialty Hospital (cardiac, orthopedic, or surgical)",institution,hospital
+Other,institution,hospital
