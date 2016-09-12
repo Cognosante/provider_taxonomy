@@ -9,19 +9,19 @@ class TaxonomyItem < ActiveRecord::Base
 
   class << self
     def provider_types
-      Specialty.where(depth: DEPTHS[:provider_types])
+      TaxonomyItem.where(depth: DEPTHS[:provider_types])
     end
 
     def specialties
-      Specialty.where(depth: DEPTHS[:specialties])
+      TaxonomyItem.where(depth: DEPTHS[:specialties])
     end
 
     def sub_specialties
-      Specialty.where(depth: DEPTHS[:sub_specialties])
+      TaxonomyItem.where(depth: DEPTHS[:sub_specialties])
     end
 
     def search_by_name(query)
-      sql = Specialty.all
+      sql = TaxonomyItem.all
       sql = sql.where('name ILIKE ?', "%#{query}%") if query.present?
 
       sql

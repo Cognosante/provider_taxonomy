@@ -27,7 +27,7 @@ Once installed, your Rails app will have a `taxonomy_items` database table and a
 If you would like to extend the model with your own, you can do the following
 
 ```ruby
-class Specialty < ActiveRecord::Base
+class Specialty < TaxonomyItem
   self.table_name = "taxonomy_items"
   belongs_to :parent, foreign_key: :parent_id, class_name: Specialty, required: false
   # Your code goes here
