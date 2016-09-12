@@ -34,5 +34,11 @@ class Specialty < TaxonomyItem
 end
 ```
 
+You may also wish to add the following to `db/seeds.rb`:
+
+```ruby
+Rake::Task['provider_taxonomy:import'].invoke
+```
+
 ## License
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
