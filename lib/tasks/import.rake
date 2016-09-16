@@ -11,7 +11,20 @@ namespace :provider_taxonomy do
 
     def download(url, dest)
       open(url) do |u|
-        File.open(dest, 'wb') { |f| f.write(u.read) }
+        f = File.open(dest, 'wb')
+        f.write(u.read)
+        f.close
+      end
+
+      if File.exist?(dest)
+        puts "Taxonomy file downloaded from: #{url}"
+      else
+        sleep(1.0)
+        if File.exist?(dest)
+          puts "Taxonomy file downloaded from: #{url}"
+        else
+          puts "Taxonomy file FAILED TO DOWNLOAD from: #{url}"
+        end
       end
     end
 
@@ -37,16 +50,12 @@ namespace :provider_taxonomy do
         FileUtils.mkdir_p 'db/provider_taxonomy'
       end
       taxonomy_file = "db/provider_taxonomy/nucc_taxonomy_#{current_version}.csv"
-      download("http://nucc.org/images/stories/CSV/nucc_taxonomy_#{current_version}.csv", taxonomy_file)
-      if File.exist?(taxonomy_file)
-        puts "Taxonomy file downloaded: Version #{current_version}."
-      end
+      download_file = "http://nucc.org/images/stories/CSV/nucc_taxonomy_#{current_version}.csv"
+      download(download_file, taxonomy_file)
     rescue OpenURI::HTTPError
       taxonomy_file = "db/rawdata/CMS_Taxonomy_Hierarchy/nucc_taxonomy_#{previous_version}.csv"
-      download("http://nucc.org/images/stories/CSV/nucc_taxonomy_#{previous_version}.csv", taxonomy_file)
-      if File.exist?(taxonomy_file)
-        puts "Taxonomy file downloaded: Version #{previous_version}."
-      end
+      download_file = "http://nucc.org/images/stories/CSV/nucc_taxonomy_#{previous_version}.csv"
+      download(download_file, taxonomy_file)
     end
 
     csv_text = File.read(taxonomy_file).scrub
