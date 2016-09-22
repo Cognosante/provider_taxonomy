@@ -10,10 +10,21 @@ namespace :provider_taxonomy do
     require 'open-uri'
 
     def download(url, dest)
-      open(url) do |u|
-        f = File.open(dest, 'wb')
-        f.write(u.read)
-        f.close
+      retry_count = 10
+      begin
+        open(url) do |u|
+          f = File.open(dest, 'wb')
+          f.write(u.read)
+          f.close
+        end
+      rescue SocketError
+        retry_count -= 1
+        if retry_count > 0
+          sleep(1.0)
+          retry
+        else
+          raise
+        end
       end
 
       if File.exist?(dest)
